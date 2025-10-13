@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/login.page.dart';
+import 'views/company.home.dart';
 
 void main() {
   runApp(MainApp());
@@ -12,8 +13,9 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         "/login": (context) => LoginPage(),
+        "/company": (context) => CompanyHome()
       },
-      initialRoute: "/login",
+      initialRoute: "/company",
     );
   }
 }
