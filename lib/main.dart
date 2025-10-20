@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:partyup/views/client.home.page.dart';
 import 'views/login.page.dart';
-import 'views/company.home.dart';
+import 'views/company.home.page.dart';
 
 void main() {
   runApp(MainApp());
@@ -12,10 +13,11 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        "/login": (context) => LoginPage(),
-        "/company": (context) => CompanyHome()
+        "/welcome": (context) => WelcomePage(),
+        "/company": (context) => CompanyHomePage(),
+        "/client": (context) => ClientHomePage()
       },
-      initialRoute: "/company",
+      initialRoute: "/welcome",
     );
   }
 }

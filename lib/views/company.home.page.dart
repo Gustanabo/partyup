@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CompanyHome extends StatefulWidget {
-
+class CompanyHomePage extends StatefulWidget {
   @override
-  CompanyHomeState createState() => CompanyHomeState();
+  CompanyHomePageState createState() => CompanyHomePageState();
 }
 
-class CompanyHomeState extends State<CompanyHome> {
+class CompanyHomePageState extends State<CompanyHomePage> {
   int selectedIndex = 0;
 
   void navigationChange(int index) {
@@ -23,6 +22,11 @@ class CompanyHomeState extends State<CompanyHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages[selectedIndex],
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 255, 181, 192),
+        title: Text('Empresa'),
+        centerTitle: true,
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: selectedIndex,
         onDestinationSelected: navigationChange,
