@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +11,21 @@ class ClientRegisterPage extends StatelessWidget {
 
   void registrar(BuildContext context) async {
     try {
-      var c = await _auth.createUserWithEmailAndPassword(
+      var client = await _auth.createUserWithEmailAndPassword(
           email: emailCtrl.text, password: senhaCtrl.text);
-      await c.user!.updateDisplayName(nomeCtrl.text);
+
+      final User? user = client.user;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference users = firestore.collection('users');
+
+        await users
+            .doc(user.uid)
+            .set({'name': nomeCtrl.text, 'email': emailCtrl.text});
+      }
+
+      await client.user!.updateDisplayName(nomeCtrl.text);
       Navigator.pushReplacementNamed(context, "/clientHome");
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

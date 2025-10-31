@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,22 @@ class CompanyRegisterPage extends StatelessWidget {
 
   void registrar(BuildContext context) async {
     try {
-      var c = await _auth.createUserWithEmailAndPassword(
+      var company = await _auth.createUserWithEmailAndPassword(
           email: emailCtrl.text, password: senhaCtrl.text);
-      await c.user!.updateDisplayName(nomeCtrl.text);
+      await company.user!.updateDisplayName(nomeCtrl.text);
+
+      final User? user = company.user;
+
+      if (user != null) {
+        FirebaseFirestore firestore = FirebaseFirestore.instance;
+        CollectionReference users = firestore.collection('users');
+
+        await users.doc(user.uid).set({
+          'name': nomeCtrl.text,
+          'email': emailCtrl.text,
+          'cnpj': cnpjCtrl.text
+        });
+      }
       Navigator.pushReplacementNamed(context, "/companyHome");
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +98,7 @@ class CompanyRegisterPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextField(
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: "Deixe vazio se for autônomo",
                 hintStyle: const TextStyle(color: Colors.grey),

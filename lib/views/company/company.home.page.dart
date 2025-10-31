@@ -9,6 +9,9 @@ class CompanyHomePage extends StatefulWidget {
 
 class CompanyHomePageState extends State<CompanyHomePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  User? user = FirebaseAuth.instance.currentUser;
+
   void deslogar(BuildContext context) {
     _auth.signOut();
     Navigator.pop(context);

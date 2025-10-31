@@ -1,14 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:partyup/views/character.add.page.dart';
-import 'package:partyup/views/character.details.page.dart';
-import 'package:partyup/views/client.home.page.dart';
-import 'package:partyup/views/client.login.page.dart';
-import 'package:partyup/views/client.register.page.dart';
-import 'package:partyup/views/company.login.page.dart';
-import 'package:partyup/views/company.register.page.dart';
+import 'package:partyup/views/character/character.add.page.dart';
+import 'package:partyup/views/character/character.details.page.dart';
+import 'package:partyup/views/client/client.home.page.dart';
+import 'package:partyup/views/client/client.login.page.dart';
+import 'package:partyup/views/client/client.register.page.dart';
+import 'package:partyup/views/company/company.login.page.dart';
+import 'package:partyup/views/company/company.register.page.dart';
 import 'views/welcome.page.dart';
-import 'views/company.home.page.dart';
+import 'views/company/company.home.page.dart';
 
 const firebaseConfig = FirebaseOptions(
     apiKey: "AIzaSyAjV5oCiLCgaIsVQRDrIwAuziwR8RHh9IY",

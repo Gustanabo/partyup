@@ -128,6 +128,25 @@ class ClientLoginPage extends StatelessWidget {
                 ),
               ],
             ),
+
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/companyLogin");
+                  },
+                  child: const Text(
+                    "Ou entre como Empresa",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 8),
             SizedBox(
               width: double.infinity,
