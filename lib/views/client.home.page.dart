@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ClientHomePage extends StatefulWidget {
@@ -6,6 +7,12 @@ class ClientHomePage extends StatefulWidget {
 }
 
 class _ClientHomePageState extends State<ClientHomePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  void deslogar(BuildContext context) {
+    _auth.signOut();
+    Navigator.pop(context);
+  }
+
   int selectedIndex = 0;
 
   void navigationChange(int index) {
@@ -377,7 +384,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
           const SizedBox(height: 24),
           GestureDetector(
-            onTap: () {},
+            onTap: () => deslogar(context),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 14),
               width: double.infinity,

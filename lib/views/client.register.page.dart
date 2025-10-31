@@ -1,6 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ClientRegisterPage extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController nomeCtrl = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController senhaCtrl = TextEditingController();
+  final TextEditingController senhaConfCtrl = TextEditingController();
+
+  void registrar(BuildContext context) async {
+    try {
+      var c = await _auth.createUserWithEmailAndPassword(
+          email: emailCtrl.text, password: senhaCtrl.text);
+      await c.user!.updateDisplayName(nomeCtrl.text);
+      Navigator.pushReplacementNamed(context, "/clientHome");
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Erro ao registrar.')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +70,7 @@ class ClientRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: nomeCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -75,6 +95,7 @@ class ClientRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: emailCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -99,6 +120,7 @@ class ClientRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: senhaCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -124,6 +146,7 @@ class ClientRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: senhaConfCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -134,9 +157,7 @@ class ClientRegisterPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, "/clientHome");
-                },
+                onPressed: () => registrar(context),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),
@@ -165,9 +186,7 @@ class ClientRegisterPage extends StatelessWidget {
                   style: TextStyle(color: Colors.grey),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop,
                   child: const Text(
                     "Faça Login",
                     style: TextStyle(

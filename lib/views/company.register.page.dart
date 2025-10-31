@@ -1,6 +1,26 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CompanyRegisterPage extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController nomeCtrl = TextEditingController();
+  final TextEditingController cnpjCtrl = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController senhaCtrl = TextEditingController();
+  final TextEditingController senhaConfCtrl = TextEditingController();
+
+  void registrar(BuildContext context) async {
+    try {
+      var c = await _auth.createUserWithEmailAndPassword(
+          email: emailCtrl.text, password: senhaCtrl.text);
+      await c.user!.updateDisplayName(nomeCtrl.text);
+      Navigator.pushReplacementNamed(context, "/companyHome");
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Erro ao registrar.')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +71,7 @@ class CompanyRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: nomeCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -75,6 +96,7 @@ class CompanyRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: cnpjCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -98,6 +120,7 @@ class CompanyRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: emailCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -122,6 +145,7 @@ class CompanyRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: senhaCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -147,6 +171,7 @@ class CompanyRegisterPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: senhaConfCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -157,9 +182,7 @@ class CompanyRegisterPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, "/companyHome");
-                },
+                onPressed: () => registrar(context),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),
@@ -188,9 +211,7 @@ class CompanyRegisterPage extends StatelessWidget {
                   style: TextStyle(color: Colors.grey),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                   child: const Text(
                     "Faça Login",
                     style: TextStyle(

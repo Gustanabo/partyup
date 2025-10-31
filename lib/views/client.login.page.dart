@@ -1,8 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ClientLoginPage extends StatelessWidget {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController senhaCtrl = TextEditingController();
+
+  void logar(BuildContext context) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+          email: emailCtrl.text, password: senhaCtrl.text);
+      Navigator.pushNamed(context, "/clientHome");
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message ?? 'Erro ao logar.')));
+    }
+  }
+
+  void registrar(BuildContext context) {
+    Navigator.pushNamed(context, "/registro");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +54,7 @@ class ClientLoginPage extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "E-mail ou usuário",
+                "E-mail",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   color: Colors.grey[800],
@@ -47,7 +64,7 @@ class ClientLoginPage extends StatelessWidget {
             const SizedBox(height: 8),
             TextField(
               decoration: InputDecoration(
-                hintText: "Digite seu e-mail ou usuário",
+                hintText: "Digite seu e-mail",
                 prefixIcon: const Icon(Icons.person_outline),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -57,6 +74,7 @@ class ClientLoginPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: emailCtrl,
             ),
 
             const SizedBox(height: 16),
@@ -86,6 +104,7 @@ class ClientLoginPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               ),
+              controller: senhaCtrl,
             ),
 
             const SizedBox(height: 8),
@@ -113,9 +132,7 @@ class ClientLoginPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/clientHome");
-                },
+                onPressed: () => logar(context),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(40),

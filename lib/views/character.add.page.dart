@@ -97,7 +97,7 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               hint: const Text('Selecione uma categoria'),
-              initialValue: _categoriaSelecionada,
+              value: _categoriaSelecionada,
               isExpanded: true,
               items: _categorias.map((String categoria) {
                 return DropdownMenuItem<String>(

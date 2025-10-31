@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:partyup/views/character.add.page.dart';
 import 'package:partyup/views/character.details.page.dart';
@@ -9,7 +10,17 @@ import 'package:partyup/views/company.register.page.dart';
 import 'views/welcome.page.dart';
 import 'views/company.home.page.dart';
 
-void main() {
+const firebaseConfig = FirebaseOptions(
+    apiKey: "AIzaSyAjV5oCiLCgaIsVQRDrIwAuziwR8RHh9IY",
+    authDomain: "partyup-92422.firebaseapp.com",
+    projectId: "partyup-92422",
+    storageBucket: "partyup-92422.firebasestorage.app",
+    messagingSenderId: "465457911757",
+    appId: "1:465457911757:web:fba127715ef3742d149684");
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: firebaseConfig);
   runApp(MainApp());
 }
 

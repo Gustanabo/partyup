@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -7,6 +8,12 @@ class CompanyHomePage extends StatefulWidget {
 }
 
 class CompanyHomePageState extends State<CompanyHomePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  void deslogar(BuildContext context) {
+    _auth.signOut();
+    Navigator.pop(context);
+  }
+
   int selectedIndex = 0;
 
   void navigationChange(int index) {
@@ -605,7 +612,7 @@ class CompanyHomePageState extends State<CompanyHomePage> {
 
           const SizedBox(height: 24),
           GestureDetector(
-            onTap: () {},
+            onTap: () => deslogar(context),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 14),
               width: double.infinity,
