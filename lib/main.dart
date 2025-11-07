@@ -21,16 +21,18 @@ const firebaseConfig = FirebaseOptions(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: firebaseConfig);
-  runApp(MainApp());
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Color.fromARGB(255, 255, 181, 192))),
+              seedColor: const Color.fromARGB(255, 255, 181, 192))),
       debugShowCheckedModeBanner: false,
       routes: {
         "/welcome": (context) => WelcomePage(),

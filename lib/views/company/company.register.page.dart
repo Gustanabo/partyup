@@ -10,6 +10,8 @@ class CompanyRegisterPage extends StatelessWidget {
   final TextEditingController senhaCtrl = TextEditingController();
   final TextEditingController senhaConfCtrl = TextEditingController();
 
+  CompanyRegisterPage({super.key});
+
   void registrar(BuildContext context) async {
     try {
       var company = await _auth.createUserWithEmailAndPassword(
