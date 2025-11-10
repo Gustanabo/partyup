@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:partyup/widgets/appointment.dart';
+import 'package:partyup/widgets/title.field.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CompanyAppointmentsPage extends StatelessWidget {
@@ -26,6 +27,7 @@ class CompanyAppointmentsPage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
+          const TitleField(title: 'Agendamentos'),
           TableCalendar(
             firstDay: DateTime.utc(2010, 10, 16),
             lastDay: DateTime.utc(2030, 3, 14),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:partyup/widgets/request.dart';
+import 'package:partyup/widgets/title.field.dart';
 
 class CompanyRequestPage extends StatelessWidget {
   CompanyRequestPage({super.key});
@@ -30,13 +31,7 @@ class CompanyRequestPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Novas solicitações',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          const TitleField(title: 'Novas Solicitações'),
           const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(

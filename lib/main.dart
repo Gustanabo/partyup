@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:partyup/views/character/character.add.page.dart';
 import 'package:partyup/views/character/character.details.page.dart';
 import 'package:partyup/views/client/client.home.page.dart';
-import 'package:partyup/views/client/client.login.page.dart';
-import 'package:partyup/views/client/client.register.page.dart';
-import 'package:partyup/views/company/company.login.page.dart';
-import 'package:partyup/views/company/company.register.page.dart';
+import 'package:partyup/views/login.page.dart';
+import 'package:partyup/views/register.page.dart';
 import 'views/welcome.page.dart';
 import 'views/company/company.home.page.dart';
 
@@ -35,15 +33,13 @@ class MainApp extends StatelessWidget {
               seedColor: const Color.fromARGB(255, 255, 181, 192))),
       debugShowCheckedModeBanner: false,
       routes: {
-        "/welcome": (context) => WelcomePage(),
-        "/companyLogin": (context) => CompanyLoginPage(),
-        "/companyRegister": (context) => CompanyRegisterPage(),
-        "/companyHome": (context) => CompanyHomePage(),
+        "/welcome": (context) => const WelcomePage(),
+        "/register": (context) => RegisterPage(),
+        "/login": (context) => LoginPage(),
+        "/companyHome": (context) => const CompanyHomePage(),
         "/clientHome": (context) => ClientHomePage(),
-        "/clientLogin": (context) => ClientLoginPage(),
-        "/clientRegister": (context) => ClientRegisterPage(),
         "/characterDetails": (context) => CharacterDetailsPage(),
-        "/characterAdd": (context) => CharacterAddPage()
+        "/characterAdd": (context) => const CharacterAddPage()
       },
       initialRoute: "/welcome",
     );

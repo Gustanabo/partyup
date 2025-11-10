@@ -6,8 +6,8 @@ import 'package:partyup/widgets/profile.field.dart';
 import 'package:partyup/widgets/profile.section.dart';
 import 'package:partyup/widgets/title.field.dart';
 
-class CompanyProfilePage extends StatelessWidget {
-  CompanyProfilePage({super.key});
+class ClientProfilePage extends StatelessWidget {
+  ClientProfilePage({super.key});
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -37,8 +37,7 @@ class CompanyProfilePage extends StatelessWidget {
         }
 
         final data = s.data?.data() ?? {};
-        final nomeEmpresa = (data['name'] ?? user.displayName ?? '—') as String;
-        final cnpj = (data['cnpj'] ?? '—') as String;
+        final nomeCliente = (data['name'] ?? user.displayName ?? '—') as String;
         final email = (data['email'] ?? user.email ?? '—') as String;
 
         return SingleChildScrollView(
@@ -49,7 +48,7 @@ class CompanyProfilePage extends StatelessWidget {
               const TitleField(title: 'Perfil'),
               const SizedBox(height: 24),
               Text(
-                nomeEmpresa,
+                nomeCliente,
                 style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -57,14 +56,13 @@ class CompanyProfilePage extends StatelessWidget {
               ),
               const ProfileSection(title: 'Meus Dados'),
               ProfileField(
-                  title: 'Nome da Empresa',
-                  subtitle: nomeEmpresa,
+                  title: 'Nome Completo',
+                  subtitle: nomeCliente,
                   icon: Icons.business),
-              ProfileField(title: 'CNPJ', subtitle: cnpj, icon: Icons.badge),
               ProfileField(title: 'E-mail', subtitle: email, icon: Icons.mail),
-              const ProfileSection(title: 'Serviços'),
+              const ProfileSection(title: 'Agendamentos'),
               const ProfileField(
-                  title: 'Histórico de Serviços', icon: Icons.history),
+                  title: 'Histórico de agendamentos', icon: Icons.history),
               const SizedBox(height: 24),
               Button(
                 text: 'Sair',
