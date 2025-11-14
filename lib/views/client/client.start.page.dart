@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:partyup/widgets/category.dart';
 import 'package:partyup/widgets/search.field.dart';
 import 'package:partyup/widgets/title.field.dart';
+import 'package:partyup/views/client/client.search.page.dart';
 
 class ClientStartPage extends StatelessWidget {
   ClientStartPage({super.key});
@@ -27,6 +28,19 @@ class ClientStartPage extends StatelessWidget {
             const SizedBox(height: 16),
             SearchField(
               ctrl: pesquisaCtrl,
+              onSubmitted: (value) {
+                if (value.trim().isEmpty) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ClientSearchPage(
+                      searchText: value.trim(), // Sempre passa o valor trimado
+                      category:
+                          null, // Ou passe uma categoria específica se houver
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 24),
             const Text(
@@ -39,17 +53,32 @@ class ClientStartPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-                child: GridView.builder(
-                    itemCount: categorias.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: 0.95,
-                    ),
-                    itemBuilder: (context, index) =>
-                        Category(category: categorias[index]))),
+              child: GridView.builder(
+                itemCount: categorias.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 20,
+                  crossAxisSpacing: 20,
+                  childAspectRatio: 0.95,
+                ),
+                itemBuilder: (context, index) => Category(
+                  category: categorias[index],
+                  onTap: () {
+                    final categoria = categorias[index]['titulo']!;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ClientSearchPage(
+                          category: categoria, // Passa a categoria selecionada
+                          searchText:
+                              '', // Ou passe um valor inicial para pesquisa
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
           ],
         ),
       ),

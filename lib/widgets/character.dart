@@ -16,10 +16,18 @@ class Character extends StatelessWidget {
         children: [
           ClipOval(
             child: Image.network(
-              personagem["img"]!,
+              personagem["img"] ?? personagem["photoUrl"] ?? '',
               height: 56,
               width: 56,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 56,
+                  width: 56,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.person, color: Colors.grey),
+                );
+              },
             ),
           ),
           const SizedBox(width: 14),
@@ -28,7 +36,7 @@ class Character extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  personagem["personagem"]!,
+                  personagem["personagem"] ?? personagem["name"] ?? 'Sem nome',
                   style: const TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
@@ -36,7 +44,7 @@ class Character extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  personagem["nome"]!,
+                  personagem["nome"] ?? personagem["description"] ?? personagem["category"] ?? '',
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,

@@ -26,7 +26,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
   late final List<Widget> pages = [
     ClientStartPage(),
-    ClientSearchPage(),
+    ClientSearchPage(), // Página de busca sem filtros iniciais
     ClientProfilePage()
   ];
 
