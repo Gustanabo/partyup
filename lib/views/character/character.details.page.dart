@@ -1,17 +1,61 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CharacterDetailsPage extends StatelessWidget {
+  CharacterDetailsPage({super.key, this.character});
+  final Map? character;
   String? selectedTime;
 
   final horarios = ["10:00", "13:00", "15:00", "18:00"];
+
+  Widget _buildImage(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        height: 180,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(Icons.person, color: Colors.grey, size: 48),
+      );
+    }
+    if (imageUrl.startsWith('data:image')) {
+      try {
+        final base64String = imageUrl.split(',')[1];
+        final bytes = base64Decode(base64String);
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.memory(bytes, height: 180, width: double.infinity, fit: BoxFit.cover),
+        );
+      } catch (_) {
+        return Container(
+          height: 180,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(Icons.person, color: Colors.grey, size: 48),
+        );
+      }
+    } else {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(imageUrl, height: 180, width: double.infinity, fit: BoxFit.cover),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Palhaço Alegria",
-          style: TextStyle(
+        title: Text(
+          (character?["name"] ?? character?["personagem"] ?? 'Personagem'),
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w800,
             color: Colors.black,
@@ -24,9 +68,31 @@ class CharacterDetailsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
+            _buildImage(character?["photoUrl"] ?? character?["img"]),
+            const SizedBox(height: 12),
+            Text(
+              (((character?["companyName"] as String?)?.isNotEmpty ?? false)
+                  ? 'Empresa: ${character?["companyName"] as String}'
+                  : ''),
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 12),
             const Text(
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec augue mauris. Sed pharetra, lacus sed bibendum dignissim, arcu ligula commodo leo, at pretium velit quam sed sapien. Phasellus tristique ligula sed tellus malesuada, a ultrices elit pharetra. Proin id lacus consequat, scelerisque sapien in, pharetra magna.",
+              "Descrição",
               style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              (character?["description"] ?? 'Não há descrição para este personagem.'),
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
                 height: 1.5,

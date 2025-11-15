@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
-import 'package:partyup/views/company/company.characters.page.dart';
+import 'package:flutter/foundation.dart' show Uint8List;
 
 class CharacterAddPage extends StatefulWidget {
   const CharacterAddPage({super.key});
@@ -26,6 +26,7 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
   ];
 
   XFile? _image;
+  Uint8List? _imageBytes;
   bool _saving = false;
 
   @override
@@ -35,19 +36,74 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final img = await picker.pickImage(source: ImageSource.gallery, imageQuality: 92);
-    if (img != null) setState(() => _image = img);
+  Future<void> _showImageSourceDialog() async {
+    if (!mounted) return;
+    
+    final ImageSource? source = await showDialog<ImageSource>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Selecionar Foto'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Tirar Foto'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Escolher da Galeria'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (source != null) {
+      await _pickImage(source);
+    }
   }
 
-  Future<String?> _uploadImage(String docId) async {
-    if (_image == null) return null;
-    final bytes = await _image!.readAsBytes(); // funciona no mobile e web
-    final ref = FirebaseStorage.instance.ref().child('characters/$docId.jpg');
-    final metadata = SettableMetadata(contentType: 'image/jpeg');
-    await ref.putData(bytes, metadata);
-    return ref.getDownloadURL();
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final img = await picker.pickImage(source: source, imageQuality: 92);
+      if (img != null) {
+        final bytes = await img.readAsBytes();
+        if (mounted) {
+          setState(() {
+            _image = img;
+            _imageBytes = bytes;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao selecionar imagem: $e')),
+        );
+      }
+    }
+  }
+
+  String? _convertImageToBase64() {
+    if (_imageBytes == null) return null;
+    
+    try {
+      // Converte os bytes da imagem para base64
+      final base64String = base64Encode(_imageBytes!);
+      // Retorna como data URI para fácil exibição
+      return 'data:image/jpeg;base64,$base64String';
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao converter imagem: $e')),
+        );
+      }
+      return null;
+    }
   }
 
   Future<void> _save() async {
@@ -59,35 +115,52 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
       return;
     }
 
+    // Obtém o usuário logado
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Usuário não autenticado')),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
     try {
       final col = FirebaseFirestore.instance.collection('characters');
-      final docRef = col.doc(); // gera ID
-      final photoUrl = await _uploadImage(docRef.id);
+      final docRef = col.doc();
+      final imageBase64 = _convertImageToBase64();
+      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      final companyName = user.displayName ?? (userDoc.data()?['name'] as String?) ?? '';
 
       await docRef.set({
         'name': _nameCtrl.text.trim(),
         'category': _categoriaSelecionada,
         'description': _descCtrl.text.trim(),
-        'photoUrl': photoUrl,
+        'photoUrl': imageBase64 ?? '',
+        'companyId': user.uid,
+        'companyName': companyName,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Personagem criado')),
+          const SnackBar(
+            content: Text('Personagem criado com sucesso!'),
+            backgroundColor: Colors.green,
+          ),
         );
-        Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => CompanyCharactersPage(),
-        ),
-      );
+        // Volta para a página anterior (CompanyHomePage com a bottom navigation bar)
+        Navigator.pop(context);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao salvar: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -97,14 +170,21 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
-      appBar: AppBar(title: const Text('Novo Personagem'), elevation: 0),
+      appBar: AppBar(
+        title: const Text('Novo Personagem'),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             InkWell(
-              onTap: _pickImage,
+              onTap: _showImageSourceDialog,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
@@ -125,17 +205,18 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
                       textAlign: TextAlign.center,
                     ),
                   ] else ...[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.memory(
-                        // preview cross-plataform
-                        // ignore: invalid_use_of_visible_for_testing_member
-                        awaitForImage(_image!) as Uint8List, // ver helper abaixo
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    if (_imageBytes != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.memory(
+                          _imageBytes!,
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    else
+                      const CircularProgressIndicator(),
                     const SizedBox(height: 8),
                     const Text('Toque para trocar a foto'),
                   ],
@@ -200,6 +281,3 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
     );
   }
 }
-
-/// Helper para ler bytes do XFile e exibir no Image.memory
-Future<Uint8List> awaitForImage(XFile file) => file.readAsBytes();

@@ -56,6 +56,8 @@ class CharacterService {
           'description': data['description'] ?? '',
           'name': data['name'] ?? '',
           'photoUrl': data['photoUrl'] ?? '',
+          'companyId': data['companyId'] ?? '',
+          'companyName': data['companyName'] ?? '',
         };
 
         return transformedData;

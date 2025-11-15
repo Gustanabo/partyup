@@ -3,6 +3,7 @@ import 'package:partyup/widgets/character.dart';
 import 'package:partyup/widgets/search.field.dart';
 import 'package:partyup/widgets/title.field.dart';
 import 'package:partyup/services/characters/character_service.dart';
+import 'package:partyup/views/character/character.details.page.dart';
 
 class ClientSearchPage extends StatefulWidget {
   final String? searchText; // Adiciona o parâmetro searchText (opcional)
@@ -140,8 +141,19 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
 
                     return ListView.builder(
                       itemCount: personagens.length,
-                      itemBuilder: (context, index) =>
-                          Character(personagem: personagens[index]),
+                      itemBuilder: (context, index) => Character(
+                        personagem: personagens[index],
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CharacterDetailsPage(
+                                character: personagens[index],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

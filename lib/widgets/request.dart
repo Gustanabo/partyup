@@ -1,8 +1,55 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class Request extends StatelessWidget {
   const Request({super.key, required this.item});
   final Map item;
+
+  Widget _buildImage(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return CircleAvatar(
+        radius: 30,
+        backgroundColor: Colors.grey[300],
+        child: const Icon(Icons.person, color: Colors.grey, size: 30),
+      );
+    }
+    
+    // Verifica se é base64 (data URI)
+    if (imageUrl.startsWith('data:image')) {
+      try {
+        final base64String = imageUrl.split(',')[1];
+        final bytes = base64Decode(base64String);
+        return CircleAvatar(
+          radius: 30,
+          backgroundImage: MemoryImage(bytes),
+          onBackgroundImageError: (exception, stackTrace) {},
+        );
+      } catch (e) {
+        return CircleAvatar(
+          radius: 30,
+          backgroundColor: Colors.grey[300],
+          child: const Icon(Icons.person, color: Colors.grey, size: 30),
+        );
+      }
+    } else {
+      // É uma URL normal ou asset
+      if (imageUrl.startsWith('assets/')) {
+        return CircleAvatar(
+          radius: 30,
+          backgroundImage: AssetImage(imageUrl),
+          onBackgroundImageError: (exception, stackTrace) {
+            // Fallback para erro
+          },
+        );
+      } else {
+        return CircleAvatar(
+          radius: 30,
+          backgroundImage: NetworkImage(imageUrl),
+          onBackgroundImageError: (exception, stackTrace) {},
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +64,7 @@ class Request extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: NetworkImage(item['imagem']!),
-              ),
+              _buildImage(item['imagem']),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
