@@ -5,13 +5,17 @@ class Appointment extends StatelessWidget {
       {super.key,
       required this.nome,
       required this.horario,
-      required this.icone});
+      required this.icone,
+      this.onTap});
   final String nome;
   final String horario;
   final String icone;
+  final VoidCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return InkWell(
+      onTap: onTap,
+      child: Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -56,6 +60,6 @@ class Appointment extends StatelessWidget {
           const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
         ],
       ),
-    );
+    ));
   }
 }

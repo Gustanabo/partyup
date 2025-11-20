@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:partyup/views/client/client.profile.page.dart';
 import 'package:partyup/views/client/client.search.page.dart';
 import 'package:partyup/views/client/client.start.page.dart';
+import 'package:partyup/views/client/client.requests.page.dart';
 
 class ClientHomePage extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
   late final List<Widget> pages = [
     ClientStartPage(),
     ClientSearchPage(), // Página de busca sem filtros iniciais
+    ClientRequestsPage(),
     ClientProfilePage()
   ];
 
@@ -49,6 +51,10 @@ class _ClientHomePageState extends State<ClientHomePage> {
           NavigationDestination(
             icon: Icon(Icons.search),
             label: "Buscar",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.event_note),
+            label: "Agendamentos",
           ),
           NavigationDestination(
             icon: Icon(Icons.person),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:partyup/views/character/character.edit.page.dart';
 
 class CompanyCharacterDisplay extends StatelessWidget {
   const CompanyCharacterDisplay({super.key, required this.character});
@@ -82,7 +83,21 @@ class CompanyCharacterDisplay extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              // TODO: editar personagem futuramente
+              final id = character['id'] as String?;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CharacterEditPage(
+                    characterId: id ?? '',
+                    initialData: {
+                      'name': character['nome'],
+                      'category': character['categoria'],
+                      'description': character['descricao'],
+                      'photoUrl': character['imagem'],
+                    },
+                  ),
+                ),
+              );
             },
             icon: const Icon(Icons.edit,
                 color: Color.fromARGB(255, 255, 181, 192)),

@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class Request extends StatelessWidget {
-  const Request({super.key, required this.item});
+  const Request({super.key, required this.item, this.onAccept, this.onDecline});
   final Map item;
+  final VoidCallback? onAccept;
+  final VoidCallback? onDecline;
 
   Widget _buildImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
@@ -102,7 +104,7 @@ class Request extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: onDecline,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFffd9de),
                     elevation: 0,
@@ -122,7 +124,7 @@ class Request extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: onAccept,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFffd9de),
                     elevation: 0,

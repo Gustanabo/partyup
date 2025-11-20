@@ -63,8 +63,6 @@ class CompanyProfilePage extends StatelessWidget {
               ProfileField(title: 'CNPJ', subtitle: cnpj, icon: Icons.badge),
               ProfileField(title: 'E-mail', subtitle: email, icon: Icons.mail),
               const ProfileSection(title: 'Serviços'),
-              const ProfileField(
-                  title: 'Histórico de Serviços', icon: Icons.history),
               const SizedBox(height: 24),
               Button(
                 text: 'Sair',
