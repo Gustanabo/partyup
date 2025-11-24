@@ -104,7 +104,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     if (_imageBytes == null) return null;
     final base64String = base64Encode(_imageBytes!);
     return 'data:image/jpeg;base64,$base64String';
-    }
+  }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
@@ -240,16 +240,19 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
           ]),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          height: 50,
-          child: ElevatedButton(
-            onPressed: _saving ? null : _save,
-            style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-            child: _saving
-                ? const CircularProgressIndicator.adaptive()
-                : const Text('Salvar Alterações', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              onPressed: _saving ? null : _save,
+              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              child: _saving
+                  ? const CircularProgressIndicator.adaptive()
+                  : const Text('Salvar Alterações', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
           ),
         ),
       ),

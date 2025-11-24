@@ -60,9 +60,11 @@ class ClientRequestsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Meus Agendamentos'),
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: stream,
-        builder: (context, s) {
+      body: SafeArea(
+        top: false,
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: stream,
+          builder: (context, s) {
           if (s.hasError) {
             return const Center(child: Text('Erro ao carregar'));
           }
@@ -170,6 +172,7 @@ class ClientRequestsPage extends StatelessWidget {
             },
           );
         },
+        ),
       ),
     );
   }

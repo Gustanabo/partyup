@@ -265,16 +265,19 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
           ]),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          height: 50,
-          child: ElevatedButton(
-            onPressed: _saving ? null : _save,
-            style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-            child: _saving
-                ? const CircularProgressIndicator.adaptive()
-                : const Text('Adicionar Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            height: 50,
+            child: ElevatedButton(
+              onPressed: _saving ? null : _save,
+              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              child: _saving
+                  ? const CircularProgressIndicator.adaptive()
+                  : const Text('Adicionar Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ),
           ),
         ),
       ),

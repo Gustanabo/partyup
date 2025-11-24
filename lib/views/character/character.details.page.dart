@@ -73,11 +73,13 @@ class _CharacterDetailsPageState extends State<CharacterDetailsPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             const SizedBox(height: 8),
             _buildImage(widget.character?["photoUrl"] ?? widget.character?["img"]),
             const SizedBox(height: 12),
@@ -267,6 +269,7 @@ class _CharacterDetailsPageState extends State<CharacterDetailsPage> {
           ],
         ),
       ),
+      )
     );
   }
 

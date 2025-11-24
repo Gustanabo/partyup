@@ -36,7 +36,7 @@ class CompanyHomePageState extends State<CompanyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
-      body: pages[selectedIndex],
+      body: SafeArea(top: false, bottom: true, child: pages[selectedIndex]),
 
       // Barra inferior
       bottomNavigationBar: NavigationBar(
