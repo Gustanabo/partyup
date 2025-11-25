@@ -22,7 +22,10 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
     'Super-Herói',
     'Princesa',
     'Desenho Animado',
-    'Outro'
+    'Outros',
+    'Palhaços',
+    'Animais',
+    'Halloween',
   ];
 
   XFile? _image;

@@ -8,9 +8,10 @@ class CharacterService {
     'Super-Heróis': 'Super-Herói',
     'Princesas': 'Princesa',
     'Desenhos': 'Desenho Animado',
-    'Palhaços': 'Outro', // Ajuste conforme necessário
-    'Animais': 'Outro', // Ajuste conforme necessário
-    'Halloween': 'Outro', // Ajuste conforme necessário
+    'Palhaços': 'Palhaços', // Ajuste conforme necessário
+    'Animais': 'Animais', // Ajuste conforme necessário
+    'Halloween': 'Halloween',
+    'Outros': 'Outros', // Ajuste conforme necessário
   };
 
   // Converte categoria da interface para categoria do banco
