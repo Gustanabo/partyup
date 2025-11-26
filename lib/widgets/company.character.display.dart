@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:partyup/views/character/character.edit.page.dart';
 
 class CompanyCharacterDisplay extends StatelessWidget {
-  const CompanyCharacterDisplay({super.key, required this.character});
+  const CompanyCharacterDisplay({
+    super.key,
+    required this.character,
+    this.onDelete,
+  });
   final Map character;
+  final VoidCallback? onDelete;
 
   Widget _buildImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
@@ -14,7 +19,7 @@ class CompanyCharacterDisplay extends StatelessWidget {
         child: const Icon(Icons.person, color: Colors.grey, size: 35),
       );
     }
-    
+
     // Verifica se é base64 (data URI)
     if (imageUrl.startsWith('data:image')) {
       try {
@@ -73,34 +78,42 @@ class CompanyCharacterDisplay extends StatelessWidget {
                 ),
                 Text(
                   character['categoria']!,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
-                  ),
+                  style: const TextStyle(color: Colors.grey, fontSize: 15),
                 ),
               ],
             ),
           ),
-          IconButton(
-            onPressed: () {
-              final id = character['id'] as String?;
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => CharacterEditPage(
-                    characterId: id ?? '',
-                    initialData: {
-                      'name': character['nome'],
-                      'category': character['categoria'],
-                      'description': character['descricao'],
-                      'photoUrl': character['imagem'],
-                    },
-                  ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (onDelete != null)
+                IconButton(
+                  onPressed: onDelete,
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  tooltip: 'Excluir',
                 ),
-              );
-            },
-            icon: const Icon(Icons.edit,
-                color: Color.fromARGB(255, 255, 181, 192)),
+              IconButton(
+                onPressed: () {
+                  final id = character['id'] as String?;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CharacterEditPage(
+                        characterId: id ?? '',
+                        initialData: {
+                          'name': character['nome'],
+                          'category': character['categoria'],
+                          'description': character['descricao'],
+                          'photoUrl': character['imagem'],
+                        },
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.edit, color: Color(0xFFFFB5C0)),
+                tooltip: 'Editar',
+              ),
+            ],
           ),
         ],
       ),

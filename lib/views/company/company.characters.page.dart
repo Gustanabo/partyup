@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:partyup/widgets/company.character.display.dart';
 import 'package:partyup/widgets/title.field.dart';
 
@@ -9,6 +10,84 @@ class CompanyCharactersPage extends StatelessWidget {
 
   void novoPersonagem(BuildContext context) {
     Navigator.pushNamed(context, '/characterAdd');
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    Map<String, dynamic> character,
+  ) async {
+    final name = character['nome'] as String? ?? 'personagem';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Excluir personagem'),
+        content: Text('Tem certeza que deseja excluir "$name"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await _deleteCharacter(context, character);
+    }
+  }
+
+  Future<void> _deleteCharacter(
+    BuildContext context,
+    Map<String, dynamic> character,
+  ) async {
+    final id = character['id'] as String?;
+    final imageUrl = character['imagem'] as String? ?? '';
+    if (id == null || id.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('ID do personagem inválido.')),
+      );
+      return;
+    }
+    try {
+      // Exclui documento no Firestore
+      await FirebaseFirestore.instance
+          .collection('characters')
+          .doc(id)
+          .delete();
+
+      // Tenta excluir imagem do Storage se for URL válida (não base64)
+      if (imageUrl.isNotEmpty && !imageUrl.startsWith('data:image')) {
+        try {
+          final ref = firebase_storage.FirebaseStorage.instance.refFromURL(
+            imageUrl,
+          );
+          await ref.delete();
+        } on firebase_storage.FirebaseException catch (e) {
+          // Permite seguir mesmo se não conseguir apagar a imagem
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Documento excluído. Imagem não removida (${e.code}).',
+              ),
+            ),
+          );
+        } catch (_) {
+          // Ignora outros erros silenciosamente
+        }
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Personagem excluído.')));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao excluir: $e')));
+    }
   }
 
   @override
@@ -42,19 +121,23 @@ class CompanyCharactersPage extends StatelessWidget {
                     final error = s.error;
                     print('Erro no StreamBuilder: $error');
                     print('Tipo do erro: ${error.runtimeType}');
-                    
+
                     // Verifica se é erro de índice do Firestore
                     final errorString = error.toString();
-                    if (errorString.contains('index') || errorString.contains('Index')) {
+                    if (errorString.contains('index') ||
+                        errorString.contains('Index')) {
                       print('ERRO DE ÍNDICE DO FIRESTORE DETECTADO!');
                       print('Mensagem completa: $error');
-                      
+
                       // Tenta extrair o link do índice
                       if (errorString.contains('https://')) {
                         final linkStart = errorString.indexOf('https://');
                         final linkEnd = errorString.indexOf(' ', linkStart);
                         if (linkEnd != -1) {
-                          final link = errorString.substring(linkStart, linkEnd);
+                          final link = errorString.substring(
+                            linkStart,
+                            linkEnd,
+                          );
                           print('LINK PARA CRIAR ÍNDICE: $link');
                         } else {
                           final link = errorString.substring(linkStart);
@@ -62,23 +145,33 @@ class CompanyCharactersPage extends StatelessWidget {
                         }
                       }
                     }
-                    
+
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                            const Icon(
+                              Icons.error_outline,
+                              size: 48,
+                              color: Colors.red,
+                            ),
                             const SizedBox(height: 16),
                             Text(
                               'Erro ao carregar personagens',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Erro: $error',
-                              style: const TextStyle(fontSize: 12, color: Colors.grey),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 16),
@@ -93,11 +186,12 @@ class CompanyCharactersPage extends StatelessWidget {
                       ),
                     );
                   }
-                  
-                  if (s.connectionState == ConnectionState.waiting || !s.hasData) {
+
+                  if (s.connectionState == ConnectionState.waiting ||
+                      !s.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   final docs = s.data!.docs;
                   if (docs.isEmpty) {
                     return const Center(child: Text('Nenhum personagem'));
@@ -117,8 +211,13 @@ class CompanyCharactersPage extends StatelessWidget {
                   return ListView.builder(
                     padding: const EdgeInsets.only(bottom: 80),
                     itemCount: characters.length,
-                    itemBuilder: (context, i) =>
-                        CompanyCharacterDisplay(character: characters[i]),
+                    itemBuilder: (context, i) {
+                      final c = characters[i];
+                      return CompanyCharacterDisplay(
+                        character: c,
+                        onDelete: () => _confirmDelete(context, c),
+                      );
+                    },
                   );
                 },
               ),
