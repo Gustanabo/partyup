@@ -1,4 +1,3 @@
-// lib/views/character/character.edit.page.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show Uint8List;
 
 class CharacterEditPage extends StatefulWidget {
-  const CharacterEditPage({super.key, required this.characterId, this.initialData});
+  const CharacterEditPage({
+    super.key,
+    required this.characterId,
+    this.initialData,
+  });
   final String characterId;
   final Map<String, dynamic>? initialData;
 
@@ -27,7 +30,10 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     'Super-Herói',
     'Princesa',
     'Desenho Animado',
-    'Outro'
+    'Outros',
+    'Palhaços',
+    'Animais',
+    'Halloween',
   ];
 
   XFile? _image;
@@ -43,7 +49,10 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     try {
       Map<String, dynamic>? data = widget.initialData;
       if (data == null || (data['name'] == null && data['category'] == null)) {
-        final doc = await FirebaseFirestore.instance.collection('characters').doc(widget.characterId).get();
+        final doc = await FirebaseFirestore.instance
+            .collection('characters')
+            .doc(widget.characterId)
+            .get();
         data = doc.data() ?? {};
       }
       _nameCtrl.text = (data['name'] as String?) ?? '';
@@ -125,15 +134,15 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
           .doc(widget.characterId)
           .update(updates);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Personagem atualizado')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Personagem atualizado')));
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao salvar: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro ao salvar: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -143,14 +152,22 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     if (_imageBytes != null) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image.memory(_imageBytes!, height: 160, width: double.infinity, fit: BoxFit.cover),
+        child: Image.memory(
+          _imageBytes!,
+          height: 160,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
       );
     }
     if (imageUrl == null || imageUrl.isEmpty) {
       return Container(
         height: 160,
         width: double.infinity,
-        decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: const Icon(Icons.camera_alt_outlined, size: 48),
       );
     }
@@ -160,84 +177,120 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
         final bytes = base64Decode(base64String);
         return ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.memory(bytes, height: 160, width: double.infinity, fit: BoxFit.cover),
+          child: Image.memory(
+            bytes,
+            height: 160,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
         );
       } catch (_) {
         return Container(
           height: 160,
           width: double.infinity,
-          decoration: BoxDecoration(color: Colors.grey.shade200, borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: const Icon(Icons.camera_alt_outlined, size: 48),
         );
       }
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: Image.network(imageUrl, height: 160, width: double.infinity, fit: BoxFit.cover),
+      child: Image.network(
+        imageUrl,
+        height: 160,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
-      appBar: AppBar(
-        title: const Text('Editar Personagem'),
-      ),
+      appBar: AppBar(title: const Text('Editar Personagem')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            InkWell(
-              onTap: _showImageSourceDialog,
-              child: _buildImage(_photoUrl),
-            ),
-            const SizedBox(height: 24),
-            const Text('Nome do Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: InputDecoration(
-                hintText: 'Ex: Homem-Aranha',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: _showImageSourceDialog,
+                child: _buildImage(_photoUrl),
               ),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
-            ),
-            const SizedBox(height: 24),
-            const Text('Categoria', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              const SizedBox(height: 24),
+              const Text(
+                'Nome do Personagem',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-              hint: const Text('Selecione uma categoria'),
-              value: _categoriaSelecionada,
-              isExpanded: true,
-              items: _categorias.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-              onChanged: (v) => setState(() => _categoriaSelecionada = v),
-            ),
-            const SizedBox(height: 24),
-            const Text('Descrição', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _descCtrl,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Detalhes da apresentação...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                alignLabelWithHint: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nameCtrl,
+                decoration: InputDecoration(
+                  hintText: 'Ex: Homem-Aranha',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
               ),
-            ),
-          ]),
+              const SizedBox(height: 24),
+              const Text(
+                'Categoria',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+                hint: const Text('Selecione uma categoria'),
+                value: _categoriaSelecionada,
+                isExpanded: true,
+                items: _categorias
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                onChanged: (v) => setState(() => _categoriaSelecionada = v),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Descrição',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _descCtrl,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: 'Detalhes da apresentação...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignLabelWithHint: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -248,10 +301,20 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
             height: 50,
             child: ElevatedButton(
               onPressed: _saving ? null : _save,
-              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               child: _saving
                   ? const CircularProgressIndicator.adaptive()
-                  : const Text('Salvar Alterações', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  : const Text(
+                      'Salvar Alterações',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
             ),
           ),
         ),

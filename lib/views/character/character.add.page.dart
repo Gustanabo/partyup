@@ -41,7 +41,7 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
 
   Future<void> _showImageSourceDialog() async {
     if (!mounted) return;
-    
+
     final ImageSource? source = await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
@@ -82,48 +82,30 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
           });
         }
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao selecionar imagem: $e')),
-        );
-      }
-    }
+    } catch (_) {}
   }
 
   String? _convertImageToBase64() {
     if (_imageBytes == null) return null;
-    
-    try {
-      // Converte os bytes da imagem para base64
-      final base64String = base64Encode(_imageBytes!);
-      // Retorna como data URI para fácil exibição
-      return 'data:image/jpeg;base64,$base64String';
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao converter imagem: $e')),
-        );
-      }
-      return null;
-    }
+    final base64String = base64Encode(_imageBytes!);
+    return 'data:image/jpeg;base64,$base64String';
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     if (_categoriaSelecionada == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecione uma categoria')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Selecione uma categoria')));
       return;
     }
 
     // Obtém o usuário logado
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Usuário não autenticado')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Usuário não autenticado')));
       return;
     }
 
@@ -132,8 +114,12 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
       final col = FirebaseFirestore.instance.collection('characters');
       final docRef = col.doc();
       final imageBase64 = _convertImageToBase64();
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      final companyName = user.displayName ?? (userDoc.data()?['name'] as String?) ?? '';
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      final companyName =
+          user.displayName ?? (userDoc.data()?['name'] as String?) ?? '';
 
       await docRef.set({
         'name': _nameCtrl.text.trim(),
@@ -185,87 +171,129 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            InkWell(
-              onTap: _showImageSourceDialog,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  border: Border.all(color: Colors.grey.shade400, width: 1.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  if (_image == null) ...[
-                    const Icon(Icons.camera_alt_outlined, size: 50),
-                    const SizedBox(height: 10),
-                    const Text('Foto do Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Toque para enviar uma imagem de alta qualidade',
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                      textAlign: TextAlign.center,
-                    ),
-                  ] else ...[
-                    if (_imageBytes != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.memory(
-                          _imageBytes!,
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: _showImageSourceDialog,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 30,
+                    horizontal: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    border: Border.all(color: Colors.grey.shade400, width: 1.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (_image == null) ...[
+                        const Icon(Icons.camera_alt_outlined, size: 50),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Foto do Personagem',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      )
-                    else
-                      const CircularProgressIndicator(),
-                    const SizedBox(height: 8),
-                    const Text('Toque para trocar a foto'),
-                  ],
-                ]),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Toque para enviar uma imagem de alta qualidade',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ] else ...[
+                        if (_imageBytes != null)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.memory(
+                              _imageBytes!,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        else
+                          const CircularProgressIndicator(),
+                        const SizedBox(height: 8),
+                        const Text('Toque para trocar a foto'),
+                      ],
+                    ],
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const Text('Nome do Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _nameCtrl,
-              decoration: InputDecoration(
-                hintText: 'Ex: Homem-Aranha',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              const SizedBox(height: 24),
+              const Text(
+                'Nome do Personagem',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
-            ),
-            const SizedBox(height: 24),
-            const Text('Categoria', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nameCtrl,
+                decoration: InputDecoration(
+                  hintText: 'Ex: Homem-Aranha',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Informe o nome' : null,
               ),
-              hint: const Text('Selecione uma categoria'),
-              value: _categoriaSelecionada,
-              isExpanded: true,
-              items: _categorias.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-              onChanged: (v) => setState(() => _categoriaSelecionada = v),
-            ),
-            const SizedBox(height: 24),
-            const Text('Descrição', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _descCtrl,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: 'Apresentação com acrobacias e sessão de fotos...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                alignLabelWithHint: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              const SizedBox(height: 24),
+              const Text(
+                'Categoria',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
               ),
-            ),
-          ]),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                ),
+                hint: const Text('Selecione uma categoria'),
+                value: _categoriaSelecionada,
+                isExpanded: true,
+                items: _categorias
+                    .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                    .toList(),
+                onChanged: (v) => setState(() => _categoriaSelecionada = v),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Descrição',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _descCtrl,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  hintText: 'Apresentação com acrobacias e sessão de fotos...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignLabelWithHint: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
@@ -276,10 +304,20 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
             height: 50,
             child: ElevatedButton(
               onPressed: _saving ? null : _save,
-              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
               child: _saving
                   ? const CircularProgressIndicator.adaptive()
-                  : const Text('Adicionar Personagem', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  : const Text(
+                      'Adicionar Personagem',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
             ),
           ),
         ),
