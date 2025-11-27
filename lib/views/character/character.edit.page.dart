@@ -154,7 +154,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
         borderRadius: BorderRadius.circular(8),
         child: Image.memory(
           _imageBytes!,
-          height: 160,
+          height: 360,
           width: double.infinity,
           fit: BoxFit.cover,
         ),
@@ -162,7 +162,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     }
     if (imageUrl == null || imageUrl.isEmpty) {
       return Container(
-        height: 160,
+        height: 360,
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey.shade200,
@@ -179,14 +179,14 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
           borderRadius: BorderRadius.circular(8),
           child: Image.memory(
             bytes,
-            height: 160,
+            height: 360,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
         );
       } catch (_) {
         return Container(
-          height: 160,
+          height: 360,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.grey.shade200,
@@ -200,7 +200,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
       borderRadius: BorderRadius.circular(8),
       child: Image.network(
         imageUrl,
-        height: 160,
+        height: 360,
         width: double.infinity,
         fit: BoxFit.cover,
       ),
@@ -226,6 +226,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
                 onTap: _showImageSourceDialog,
                 child: _buildImage(_photoUrl),
               ),
+              Text('Toque para mudar a imagem'),
               const SizedBox(height: 24),
               const Text(
                 'Nome do Personagem',

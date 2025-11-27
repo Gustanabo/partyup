@@ -5,11 +5,7 @@ class Category extends StatelessWidget {
 
   final VoidCallback? onTap;
 
-  const Category({
-    super.key,
-    required this.category,
-    this.onTap,
-  });
+  const Category({super.key, required this.category, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +14,13 @@ class Category extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: Image.asset(
-              category['img']!,
-              fit: BoxFit.cover,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(category['img']!, fit: BoxFit.cover),
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            category['titulo']!,
-            textAlign: TextAlign.center,
-          ),
+          Text(category['titulo']!, textAlign: TextAlign.center),
         ],
       ),
     );

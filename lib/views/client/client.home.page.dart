@@ -27,9 +27,9 @@ class _ClientHomePageState extends State<ClientHomePage> {
 
   late final List<Widget> pages = [
     ClientStartPage(),
-    ClientSearchPage(), // Página de busca sem filtros iniciais
+    ClientSearchPage(canPop: false), // Página de busca sem filtros iniciais
     ClientRequestsPage(),
-    ClientProfilePage()
+    ClientProfilePage(),
   ];
 
   @override
@@ -44,22 +44,13 @@ class _ClientHomePageState extends State<ClientHomePage> {
         onDestinationSelected: navigationChange,
         backgroundColor: Colors.white,
         destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: "Início",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search),
-            label: "Buscar",
-          ),
+          NavigationDestination(icon: Icon(Icons.home), label: "Início"),
+          NavigationDestination(icon: Icon(Icons.search), label: "Buscar"),
           NavigationDestination(
             icon: Icon(Icons.event_note),
             label: "Agendamentos",
           ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: "Perfil",
-          ),
+          NavigationDestination(icon: Icon(Icons.person), label: "Perfil"),
         ],
       ),
     );

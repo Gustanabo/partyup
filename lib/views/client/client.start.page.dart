@@ -34,6 +34,7 @@ class ClientStartPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (_) => ClientSearchPage(
+                      canPop: true,
                       searchText: value.trim(), // Sempre passa o valor trimado
                       category:
                           null, // Ou passe uma categoria específica se houver
@@ -72,13 +73,14 @@ class ClientStartPage extends StatelessWidget {
                           category: categoria, // Passa a categoria selecionada
                           searchText:
                               '', // Ou passe um valor inicial para pesquisa
+                          canPop: true,
                         ),
                       ),
                     );
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

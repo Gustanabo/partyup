@@ -40,38 +40,42 @@ class ClientProfilePage extends StatelessWidget {
         final nomeCliente = (data['name'] ?? user.displayName ?? '—') as String;
         final email = (data['email'] ?? user.email ?? '—') as String;
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const TitleField(title: 'Perfil'),
-              const SizedBox(height: 24),
-              Text(
-                nomeCliente,
-                style: const TextStyle(
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const TitleField(title: 'Perfil'),
+                const SizedBox(height: 24),
+                Text(
+                  nomeCliente,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87),
-              ),
-              const ProfileSection(title: 'Meus Dados'),
-              ProfileField(
+                    color: Colors.black87,
+                  ),
+                ),
+                const ProfileSection(title: 'Meus Dados'),
+                ProfileField(
                   title: 'Nome Completo',
                   subtitle: nomeCliente,
-                  icon: Icons.business),
-              ProfileField(title: 'E-mail', subtitle: email, icon: Icons.mail),
-              const ProfileSection(title: 'Agendamentos'),
-              const ProfileField(
-                  title: 'Histórico de agendamentos', icon: Icons.history),
-              const SizedBox(height: 24),
-              Button(
-                text: 'Sair',
-                onPressed: () => deslogar(context),
-                textColor: Colors.red,
-                icon: const Icon(Icons.logout, color: Colors.red),
-                backgroundColor: Colors.redAccent.withOpacity(0.08),
-              ),
-            ],
+                  icon: Icons.business,
+                ),
+                ProfileField(
+                  title: 'E-mail',
+                  subtitle: email,
+                  icon: Icons.mail,
+                ),
+                Button(
+                  text: 'Sair',
+                  onPressed: () => deslogar(context),
+                  textColor: Colors.red,
+                  icon: const Icon(Icons.logout, color: Colors.red),
+                  backgroundColor: Colors.redAccent.withOpacity(0.08),
+                ),
+              ],
+            ),
           ),
         );
       },

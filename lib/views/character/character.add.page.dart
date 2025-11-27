@@ -215,7 +215,7 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
                             borderRadius: BorderRadius.circular(8),
                             child: Image.memory(
                               _imageBytes!,
-                              height: 180,
+                              height: 360,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),

@@ -41,37 +41,45 @@ class CompanyProfilePage extends StatelessWidget {
         final cnpj = (data['cnpj'] ?? '—') as String;
         final email = (data['email'] ?? user.email ?? '—') as String;
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const TitleField(title: 'Perfil'),
-              const SizedBox(height: 24),
-              Text(
-                nomeEmpresa,
-                style: const TextStyle(
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const TitleField(title: 'Perfil'),
+                const SizedBox(height: 24),
+                Text(
+                  nomeEmpresa,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black87),
-              ),
-              const ProfileSection(title: 'Meus Dados'),
-              ProfileField(
+                    color: Colors.black87,
+                  ),
+                ),
+                const ProfileSection(title: 'Meus Dados'),
+                ProfileField(
                   title: 'Nome da Empresa',
                   subtitle: nomeEmpresa,
-                  icon: Icons.business),
-              ProfileField(title: 'CNPJ', subtitle: cnpj, icon: Icons.badge),
-              ProfileField(title: 'E-mail', subtitle: email, icon: Icons.mail),
-              const ProfileSection(title: 'Serviços'),
-              const SizedBox(height: 24),
-              Button(
-                text: 'Sair',
-                onPressed: () => deslogar(context),
-                textColor: Colors.red,
-                icon: const Icon(Icons.logout, color: Colors.red),
-                backgroundColor: Colors.redAccent.withOpacity(0.08),
-              ),
-            ],
+                  icon: Icons.business,
+                ),
+                ProfileField(title: 'CNPJ', subtitle: cnpj, icon: Icons.badge),
+                ProfileField(
+                  title: 'E-mail',
+                  subtitle: email,
+                  icon: Icons.mail,
+                ),
+
+                const SizedBox(height: 24),
+                Button(
+                  text: 'Sair',
+                  onPressed: () => deslogar(context),
+                  textColor: Colors.red,
+                  icon: const Icon(Icons.logout, color: Colors.red),
+                  backgroundColor: Colors.redAccent.withOpacity(0.08),
+                ),
+              ],
+            ),
           ),
         );
       },

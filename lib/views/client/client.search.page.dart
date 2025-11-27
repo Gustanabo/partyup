@@ -7,12 +7,15 @@ import 'package:partyup/views/character/character.details.page.dart';
 
 class ClientSearchPage extends StatefulWidget {
   final String? searchText; // Adiciona o parâmetro searchText (opcional)
-  final String? category; // Adiciona o parâmetro category (pode ser nulo)
+  final String? category;
 
-  ClientSearchPage({
+  final bool canPop; // Adiciona o parâmetro category (pode ser nulo)
+
+  const ClientSearchPage({
     super.key,
     this.searchText, // Torna searchText opcional
     this.category, // Adiciona category como parâmetro opcional
+    required this.canPop,
   });
 
   @override
@@ -57,12 +60,9 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
       title = 'Resultados da busca';
     }
 
-    // Verifica se pode voltar (se foi aberto via Navigator.push)
-    final canPop = Navigator.canPop(context);
-
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
-      appBar: canPop
+      appBar: widget.canPop
           ? AppBar(
               backgroundColor: const Color(0xFFF8F6FA),
               elevation: 0,
@@ -85,7 +85,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           child: Column(
             children: [
-              if (!canPop) ...[
+              if (!widget.canPop) ...[
                 TitleField(title: title),
                 const SizedBox(height: 16),
               ],
@@ -108,7 +108,8 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                     if (snapshot.hasError) {
                       return Center(
                         child: Text(
-                            'Erro ao carregar personagens: ${snapshot.error}'),
+                          'Erro ao carregar personagens: ${snapshot.error}',
+                        ),
                       );
                     }
 
