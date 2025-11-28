@@ -21,14 +21,18 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController senhaCtrl = TextEditingController();
   final TextEditingController senhaConfCtrl = TextEditingController();
   bool empresa = false;
+  bool isLoading = false;
   void logar(BuildContext context) {
     Navigator.pushNamed(context, "/login");
   }
 
   void registrar(BuildContext context) async {
     try {
+      setState(() => isLoading = true);
       var company = await _auth.createUserWithEmailAndPassword(
-          email: emailCtrl.text, password: senhaCtrl.text);
+        email: emailCtrl.text,
+        password: senhaCtrl.text,
+      );
       await company.user!.updateDisplayName(nomeCtrl.text);
 
       final User? user = company.user;
@@ -41,8 +45,9 @@ class _RegisterPageState extends State<RegisterPage> {
             'name': nomeCtrl.text,
             'email': emailCtrl.text,
             'cnpj': cnpjCtrl.text,
-            'empresa': 1
+            'empresa': 1,
           });
+          setState(() => isLoading = false);
           Navigator.pushReplacementNamed(context, "/companyHome");
         } else {
           await users.doc(user.uid).set({
@@ -50,12 +55,15 @@ class _RegisterPageState extends State<RegisterPage> {
             'email': emailCtrl.text,
             'empresa': 0,
           });
+          setState(() => isLoading = false);
           Navigator.pushReplacementNamed(context, "/clientHome");
         }
       }
     } on FirebaseAuthException catch (e) {
+      setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Erro ao registrar.')));
+        SnackBar(content: Text(e.message ?? 'Erro ao registrar.')),
+      );
     }
   }
 
@@ -63,86 +71,89 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Column(
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
+            child: Column(
               children: [
-                TitleField(title: 'Crie sua conta!'),
-                SizedBox(height: 8),
-                Text("Preencha os campos abaixo para começar."),
-              ],
-            ),
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: empresa,
-                        onChanged: (value) => setState(() {
-                          empresa = value!;
-                        }),
-                      ),
-                      const Text('Registrar como empresa'),
-                      const SizedBox(height: 16)
-                    ],
-                  ),
+                Column(
+                  children: [
+                    TitleField(title: 'Crie sua conta!'),
+                    SizedBox(height: 8),
+                    Text("Preencha os campos abaixo para começar."),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: empresa,
+                      onChanged: (value) => setState(() {
+                        empresa = value!;
+                      }),
+                    ),
+                    const Text('Registrar como empresa'),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+                InputField(
+                  ctrl: nomeCtrl,
+                  fieldName: empresa ? 'Nome da Empresa' : 'Nome Completo',
+                  fieldHint: empresa
+                      ? 'Digite o nome da sua empresa'
+                      : 'Digite seu nome completo',
+                  obscure: false,
+                ),
+                const SizedBox(height: 16),
+                if (empresa)
                   InputField(
-                    ctrl: nomeCtrl,
-                    fieldName: empresa ? 'Nome da Empresa' : 'Nome Completo',
-                    fieldHint: empresa
-                        ? 'Digite o nome da sua empresa'
-                        : 'Digite seu nome completo',
+                    ctrl: cnpjCtrl,
+                    fieldName: 'CNPJ (Opcional)',
+                    fieldHint: 'Deixe vazio se for autônomo',
                     obscure: false,
                   ),
-                  const SizedBox(height: 16),
-                  if (empresa)
-                    InputField(
-                      ctrl: cnpjCtrl,
-                      fieldName: 'CNPJ (Opcional)',
-                      fieldHint: 'Deixe vazio se for autônomo',
-                      obscure: false,
-                    ),
-                  if (empresa) const SizedBox(height: 16),
-                  InputField(
-                      ctrl: emailCtrl,
-                      fieldName: 'E-mail',
-                      fieldHint: 'Digite seu e-mail',
-                      obscure: false),
-                  const SizedBox(height: 16),
-                  InputField(
-                      ctrl: senhaCtrl,
-                      fieldName: 'Crie uma senha',
-                      fieldHint: 'Digite uma senha para sua conta',
-                      obscure: true),
-                  const SizedBox(height: 16),
-                  InputField(
-                      ctrl: senhaConfCtrl,
-                      fieldName: 'Confirme sua senha',
-                      fieldHint: 'Digite sua senha mais uma vez',
-                      obscure: true),
-                  const SizedBox(height: 8),
-                ],
-              ),
-            ), // Botão Registrar
-            Column(
-              children: [
-                Button(
-                  text: 'Registrar',
-                  onPressed: () => registrar(context),
+                if (empresa) const SizedBox(height: 16),
+                InputField(
+                  ctrl: emailCtrl,
+                  fieldName: 'E-mail',
+                  fieldHint: 'Digite seu e-mail',
+                  obscure: false,
                 ),
-                const SizedBox(height: 8),
-                ClickableText(
-                    onTap: () => logar(context),
-                    secondaryText: 'Já tem uma conta? ',
-                    mainText: 'Faça Login'),
+                const SizedBox(height: 16),
+                InputField(
+                  ctrl: senhaCtrl,
+                  fieldName: 'Crie uma senha',
+                  fieldHint: 'Digite uma senha para sua conta',
+                  obscure: true,
+                ),
+                const SizedBox(height: 16),
+                InputField(
+                  ctrl: senhaConfCtrl,
+                  fieldName: 'Confirme sua senha',
+                  fieldHint: 'Digite sua senha mais uma vez',
+                  obscure: true,
+                ),
+                const SizedBox(height: 64),
+                Column(
+                  children: [
+                    isLoading
+                        ? const CircularProgressIndicator()
+                        : Button(
+                            text: 'Registrar',
+                            onPressed: () => registrar(context),
+                          ),
+                    const SizedBox(height: 8),
+                    ClickableText(
+                      onTap: () => logar(context),
+                      secondaryText: 'Já tem uma conta? ',
+                      mainText: 'Faça Login',
+                    ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
