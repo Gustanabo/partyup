@@ -30,13 +30,11 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
     'Super-Herói',
     'Princesa',
     'Desenho Animado',
-    'Outros',
     'Palhaços',
     'Animais',
-    'Halloween',
+    'Natal',
   ];
 
-  XFile? _image;
   Uint8List? _imageBytes;
 
   @override
@@ -57,7 +55,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
       }
       _nameCtrl.text = (data['name'] as String?) ?? '';
       _descCtrl.text = (data['description'] as String?) ?? '';
-      _categoriaSelecionada = (data['category'] as String?) ?? null;
+      _categoriaSelecionada = (data['category'] as String?);
       _photoUrl = (data['photoUrl'] as String?) ?? '';
     } catch (_) {
     } finally {
@@ -74,11 +72,6 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Tirar Foto'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
             ListTile(
               leading: const Icon(Icons.photo_library),
               title: const Text('Escolher da Galeria'),
@@ -101,7 +94,6 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
         final bytes = await img.readAsBytes();
         if (mounted) {
           setState(() {
-            _image = img;
             _imageBytes = bytes;
           });
         }
@@ -262,7 +254,7 @@ class _CharacterEditPageState extends State<CharacterEditPage> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
                 hint: const Text('Selecione uma categoria'),
-                value: _categoriaSelecionada,
+                initialValue: _categoriaSelecionada,
                 isExpanded: true,
                 items: _categorias
                     .map((c) => DropdownMenuItem(value: c, child: Text(c)))

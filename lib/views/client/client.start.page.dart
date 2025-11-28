@@ -13,7 +13,7 @@ class ClientStartPage extends StatelessWidget {
     {"titulo": "Desenhos", "img": "assets/images/desenhos.png"},
     {"titulo": "Palhaços", "img": "assets/images/palhaços.png"},
     {"titulo": "Animais", "img": "assets/images/animais.png"},
-    {"titulo": "Halloween", "img": "assets/images/halloween.png"},
+    {"titulo": "Natal", "img": "assets/images/papai_noel.png"},
   ];
 
   @override

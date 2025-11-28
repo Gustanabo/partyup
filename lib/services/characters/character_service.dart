@@ -8,10 +8,9 @@ class CharacterService {
     'Super-Heróis': 'Super-Herói',
     'Princesas': 'Princesa',
     'Desenhos': 'Desenho Animado',
-    'Palhaços': 'Palhaços', // Ajuste conforme necessário
-    'Animais': 'Animais', // Ajuste conforme necessário
-    'Halloween': 'Halloween',
-    'Outros': 'Outros', // Ajuste conforme necessário
+    'Palhaços': 'Palhaços',
+    'Animais': 'Animais',
+    'Natal': 'Natal',
   };
 
   // Converte categoria da interface para categoria do banco
@@ -25,11 +24,12 @@ class CharacterService {
     String? category,
   }) {
     // Iniciando a query para a coleção "characters"
-    Query<Map<String, dynamic>> query =
-        _db.collection('characters').withConverter<Map<String, dynamic>>(
-              fromFirestore: (snap, _) => snap.data() ?? {},
-              toFirestore: (data, _) => data,
-            );
+    Query<Map<String, dynamic>> query = _db
+        .collection('characters')
+        .withConverter<Map<String, dynamic>>(
+          fromFirestore: (snap, _) => snap.data() ?? {},
+          toFirestore: (data, _) => data,
+        );
 
     // Filtra por categoria, caso a categoria seja fornecida
     // Converte a categoria da interface para a categoria do banco

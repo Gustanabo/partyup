@@ -75,9 +75,7 @@ class CompanyCharactersPage extends StatelessWidget {
               ),
             ),
           );
-        } catch (_) {
-          // Ignora outros erros silenciosamente
-        }
+        } catch (_) {}
       }
 
       ScaffoldMessenger.of(

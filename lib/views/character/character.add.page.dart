@@ -22,10 +22,9 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
     'Super-Herói',
     'Princesa',
     'Desenho Animado',
-    'Outros',
     'Palhaços',
     'Animais',
-    'Halloween',
+    'Natal',
   ];
 
   XFile? _image;
@@ -49,11 +48,6 @@ class _CharacterAddPageState extends State<CharacterAddPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Tirar Foto'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
             ListTile(
               leading: const Icon(Icons.photo_library),
               title: const Text('Escolher da Galeria'),
