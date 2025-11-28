@@ -40,6 +40,7 @@ class CompanyProfilePage extends StatelessWidget {
         final nomeEmpresa = (data['name'] ?? user.displayName ?? '—') as String;
         final cnpj = (data['cnpj'] ?? '—') as String;
         final email = (data['email'] ?? user.email ?? '—') as String;
+        final numero = (data['numero'] ?? '—') as String;
 
         return SafeArea(
           child: Padding(
@@ -69,7 +70,11 @@ class CompanyProfilePage extends StatelessWidget {
                   subtitle: email,
                   icon: Icons.mail,
                 ),
-
+                ProfileField(
+                  title: 'Telefone',
+                  subtitle: numero,
+                  icon: Icons.phone,
+                ),
                 const SizedBox(height: 24),
                 Button(
                   text: 'Sair',

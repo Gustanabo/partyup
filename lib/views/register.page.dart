@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:partyup/services/phone_converter.dart';
 import 'package:partyup/widgets/button.dart';
 import 'package:partyup/widgets/clickable.text.dart';
 import 'package:partyup/widgets/input.field.dart';
@@ -20,6 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailCtrl = TextEditingController();
   final TextEditingController senhaCtrl = TextEditingController();
   final TextEditingController senhaConfCtrl = TextEditingController();
+  final TextEditingController numeroCtrl = TextEditingController();
   bool empresa = false;
   bool isLoading = false;
   void logar(BuildContext context) {
@@ -44,6 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
           await users.doc(user.uid).set({
             'name': nomeCtrl.text,
             'email': emailCtrl.text,
+            'numero': PhoneConverter().formatarTelefone(numeroCtrl.text),
             'cnpj': cnpjCtrl.text,
             'empresa': 1,
           });
@@ -53,6 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
           await users.doc(user.uid).set({
             'name': nomeCtrl.text,
             'email': emailCtrl.text,
+            'numero': PhoneConverter().formatarTelefone(numeroCtrl.text),
             'empresa': 0,
           });
           setState(() => isLoading = false);
@@ -104,6 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ? 'Digite o nome da sua empresa'
                       : 'Digite seu nome completo',
                   obscure: false,
+                  numero: false,
                 ),
                 const SizedBox(height: 16),
                 if (empresa)
@@ -112,6 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     fieldName: 'CNPJ (Opcional)',
                     fieldHint: 'Deixe vazio se for autônomo',
                     obscure: false,
+                    numero: false,
                   ),
                 if (empresa) const SizedBox(height: 16),
                 InputField(
@@ -119,6 +125,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   fieldName: 'E-mail',
                   fieldHint: 'Digite seu e-mail',
                   obscure: false,
+                  numero: false,
+                ),
+                const SizedBox(height: 16),
+                InputField(
+                  ctrl: numeroCtrl,
+                  fieldName: 'Telefone',
+                  fieldHint: 'Digite seu número para contato',
+                  obscure: false,
+                  numero: true,
                 ),
                 const SizedBox(height: 16),
                 InputField(
@@ -126,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   fieldName: 'Crie uma senha',
                   fieldHint: 'Digite uma senha para sua conta',
                   obscure: true,
+                  numero: false,
                 ),
                 const SizedBox(height: 16),
                 InputField(
@@ -133,6 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   fieldName: 'Confirme sua senha',
                   fieldHint: 'Digite sua senha mais uma vez',
                   obscure: true,
+                  numero: false,
                 ),
                 const SizedBox(height: 64),
                 Column(

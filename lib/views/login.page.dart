@@ -75,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                     fieldHint: 'Digite seu e-mail',
                     icon: Icons.person_outline,
                     obscure: false,
+                    numero: false,
                   ),
                   const SizedBox(height: 16),
                   // Campo de senha
@@ -84,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                     fieldHint: 'Digite sua senha',
                     icon: Icons.lock,
                     obscure: true,
+                    numero: false,
                   ),
                 ],
               ),

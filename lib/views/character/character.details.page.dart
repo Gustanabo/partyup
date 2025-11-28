@@ -401,6 +401,7 @@ class _CharacterDetailsPageState extends State<CharacterDetailsPage> {
           '';
       final dateText =
           '${selectedDay!.day.toString().padLeft(2, '0')}/${selectedDay!.month.toString().padLeft(2, '0')}/${selectedDay!.year}';
+      final phone = (clientDoc.data()?['numero'] as String);
 
       await FirebaseFirestore.instance.collection('requests').add({
         'companyId': companyId,
@@ -418,6 +419,7 @@ class _CharacterDetailsPageState extends State<CharacterDetailsPage> {
         'notes': notesCtrl.text.trim(),
         'status': 'pending',
         'createdAt': FieldValue.serverTimestamp(),
+        'phone': phone,
       });
 
       if (!mounted) return;

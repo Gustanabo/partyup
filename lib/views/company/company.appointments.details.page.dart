@@ -14,7 +14,7 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
   Widget _buildImage(String? imageUrl) {
     if (imageUrl == null || imageUrl.isEmpty) {
       return Container(
-        height: 160,
+        height: 360,
         width: double.infinity,
         decoration: BoxDecoration(
           color: Colors.grey[200],
@@ -29,11 +29,16 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
         final bytes = base64Decode(base64String);
         return ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.memory(bytes, height: 160, width: double.infinity, fit: BoxFit.cover),
+          child: Image.memory(
+            bytes,
+            height: 360,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
         );
       } catch (_) {
         return Container(
-          height: 160,
+          height: 360,
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.grey[200],
@@ -45,7 +50,12 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: Image.network(imageUrl, height: 160, width: double.infinity, fit: BoxFit.cover),
+      child: Image.network(
+        imageUrl,
+        height: 160,
+        width: double.infinity,
+        fit: BoxFit.cover,
+      ),
     );
   }
 
@@ -60,6 +70,7 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
     final notes = (data['notes'] as String?) ?? '';
     final status = (data['status'] as String?) ?? 'scheduled';
     final photo = (data['characterPhotoUrl'] as String?) ?? '';
+    final phone = (data['contato'] as String?) ?? '';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
@@ -82,12 +93,32 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            const Text('Cliente', style: TextStyle(fontWeight: FontWeight.w700)),
+            const Text(
+              'Cliente',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 6),
-            Text(clientName.isNotEmpty ? clientName : '—', style: const TextStyle(fontSize: 16)),
+            Text(
+              clientName.isNotEmpty ? clientName : '—',
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 16),
 
-            const Text('Data e Horários', style: TextStyle(fontWeight: FontWeight.w700)),
+            const Text(
+              'Contato',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              phone.isNotEmpty ? phone : '—',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+
+            const Text(
+              'Data e Horários',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 6),
             Text(
               '${dateText.isNotEmpty ? dateText : '—'} ${startTime.isNotEmpty && endTime.isNotEmpty ? '$startTime - $endTime' : ''}',
@@ -95,14 +126,23 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            const Text('Local da Festa', style: TextStyle(fontWeight: FontWeight.w700)),
+            const Text(
+              'Local da Festa',
+              style: TextStyle(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 6),
-            Text(address.isNotEmpty ? address : '—', style: const TextStyle(fontSize: 16)),
+            Text(
+              address.isNotEmpty ? address : '—',
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 16),
 
             const Text('Notas', style: TextStyle(fontWeight: FontWeight.w700)),
             const SizedBox(height: 6),
-            Text(notes.isNotEmpty ? notes : '—', style: const TextStyle(fontSize: 16)),
+            Text(
+              notes.isNotEmpty ? notes : '—',
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 16),
 
             const Text('Status', style: TextStyle(fontWeight: FontWeight.w700)),
@@ -110,7 +150,10 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 6,
+                  horizontal: 12,
+                ),
                 decoration: BoxDecoration(
                   color: _statusColor(status).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(16),
@@ -131,7 +174,9 @@ class CompanyAppointmentDetailsPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text('Voltar'),
               ),

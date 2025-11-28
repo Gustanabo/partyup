@@ -39,6 +39,7 @@ class ClientProfilePage extends StatelessWidget {
         final data = s.data?.data() ?? {};
         final nomeCliente = (data['name'] ?? user.displayName ?? '—') as String;
         final email = (data['email'] ?? user.email ?? '—') as String;
+        final numero = (data['numero'] ?? '—') as String;
 
         return SafeArea(
           child: Padding(
@@ -66,6 +67,11 @@ class ClientProfilePage extends StatelessWidget {
                   title: 'E-mail',
                   subtitle: email,
                   icon: Icons.mail,
+                ),
+                ProfileField(
+                  title: 'Telefone',
+                  subtitle: numero,
+                  icon: Icons.phone,
                 ),
                 Button(
                   text: 'Sair',

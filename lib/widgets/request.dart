@@ -15,7 +15,7 @@ class Request extends StatelessWidget {
         child: const Icon(Icons.person, color: Colors.grey, size: 30),
       );
     }
-    
+
     // Verifica se é base64 (data URI)
     if (imageUrl.startsWith('data:image')) {
       try {
@@ -81,17 +81,23 @@ class Request extends StatelessWidget {
                     ),
                     Text(
                       item['descricao']!,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15,
-                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                     Text(
                       item['data']!,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    Text(
+                      item['local']!,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    Text(
+                      item['cliente']!,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                    Text(
+                      item['contato']!,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                   ],
                 ),
@@ -115,9 +121,7 @@ class Request extends StatelessWidget {
                   ),
                   child: const Text(
                     'Recusar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -135,9 +139,7 @@ class Request extends StatelessWidget {
                   ),
                   child: const Text(
                     'Aceitar',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

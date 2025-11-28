@@ -85,6 +85,9 @@ class CompanyRequestPage extends StatelessWidget {
                             'data':
                                 '${x['dateText'] ?? ''} ${x['startTime'] ?? ''} - ${x['endTime'] ?? ''}',
                             'imagem': x['characterPhotoUrl'] ?? '',
+                            'local': x['address'] ?? '',
+                            'cliente': x['clientName'] ?? '',
+                            'contato': x['phone'] ?? '',
                           };
                           return Request(
                             item: item,
@@ -100,6 +103,13 @@ class CompanyRequestPage extends StatelessWidget {
                               );
                             },
                             onAccept: () async {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Solicitação aceita e adicionada aos agendamentos',
+                                  ),
+                                ),
+                              );
                               final data = d.data();
                               await FirebaseFirestore.instance
                                   .collection('appointments')
@@ -120,18 +130,12 @@ class CompanyRequestPage extends StatelessWidget {
                                     'notes': data['notes'],
                                     'status': 'scheduled',
                                     'createdAt': FieldValue.serverTimestamp(),
+                                    'contato': data['phone'],
                                   });
                               await FirebaseFirestore.instance
                                   .collection('requests')
                                   .doc(d.id)
                                   .update({'status': 'accepted'});
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Solicitação aceita e adicionada aos agendamentos',
-                                  ),
-                                ),
-                              );
                             },
                           );
                         },
